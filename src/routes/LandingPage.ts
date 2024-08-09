@@ -9,9 +9,9 @@ export default class LandingPage extends RoutesModel {
     });
   }
 
-    public run(port: number): void {
-        this.app.get('/', (req, res) => {
-            res.status(200).send('Hello World');
+    public run(): void {
+        this.client.get(this.path, (req, res) => {
+            res.status(200).send('OK');
         });
     }
 }

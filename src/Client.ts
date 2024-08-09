@@ -1,19 +1,49 @@
 import express, { Application } from 'express';
 
-export default class MyServer {
-  private app: Application;
+import Loaders from './loaders/index';
 
-  constructor() {
-    this.app = express(); 
+export default class Client {
+    public app: Application;
 
-    this.app.get('/', (req, res) => {
-      res.status(200).send('Hello World');
-    });
-  }
+    constructor() {
+        this.app = express();
+    }
 
-  public startServer(port: number): void {
-    this.app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-  }
+    public startServer(port: number): void {
+        this.app.listen(port, () => {
+            this.LOG(`http://localhost:${port}/`, 'App is running')
+        });
+        this.initializeLoaders();
+    }
+
+    public async initializeLoaders(): Promise<void> {
+        const loaders: Array<typeof Loaders[keyof typeof Loaders]> = Object.values(Loaders);
+        let loadedCount = 0;
+        for (const LoaderClass of loaders) {
+            const loaderInstance = new LoaderClass(this); 
+            try {
+                await loaderInstance.load();
+                loadedCount++;
+            } catch (e) {
+                this.LOG_ERR(e instanceof Error ? e.message : String(e), loaderInstance.name);
+            }
+        }
+
+        this.LOG(`Successfully loaded ${loadedCount} modules out of ${loaders.length}`, 'LOADERS');
+    }
+
+    public LOG(...args: string[]): void {
+        const Sendlog = (args.length > 1 ? `\x1b[32m${args.map(t => `[${t}]`).slice(1).join(' ')}\x1b[0m` : '') + ` \x1b[34m${args[0]}\x1b[0m`;
+        console.log(Sendlog);
+    }
+
+    public LOG_ERR(...args: string[]): void {
+        const error = args[0];
+        const Sendlog = (args.length > 1 ? args.slice(1).map(t => `\x1b[33m[${t}]\x1b[0m`) : '');
+        console.error('\x1b[31m[ERROR]\x1b[0m', ...Sendlog, error);
+    }
+
+    public Error(err: any): void {
+        throw new Error(err.message ? err.message : String(err));
+    }
 }
