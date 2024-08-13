@@ -1,4 +1,6 @@
+
 import { RoutesModelOptions } from "../utils/types";
+import { ClientInterface } from "../utils/types";
 
 export default class RoutesModel {
     client: any;

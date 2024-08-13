@@ -1,0 +1,15 @@
+meta {
+  name: deleteUser
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:3333/users/?user=66bbdfcb09432486c1216950
+  body: json
+  auth: none
+}
+
+query {
+  user: 66bbdfcb09432486c1216950
+}

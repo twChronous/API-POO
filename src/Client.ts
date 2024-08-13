@@ -1,12 +1,16 @@
 import express, { Application } from 'express';
 
+import { MongoDB } from './database';
 import Loaders from './loaders/index';
 
 export default class Client {
     public app: Application;
-
+    public database: MongoDB | false;
+    
     constructor() {
         this.app = express();
+        this.database = false;
+        this.app.use(express.json());
     }
 
     public startServer(port: number): void {

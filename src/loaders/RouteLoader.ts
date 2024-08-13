@@ -1,15 +1,15 @@
 import path from 'path';
 import { readdirSync } from 'fs';
 import RoutesModel from '../models/RoutesModel';
-import Client from '../Client';
+import {ClientInterface}  from '../utils/types';
 
 const DIR_ROUTES = 'src/routes';
 
 export default class RouteLoader {
     public name: string;
-    private client: Client;
+    private client: ClientInterface;
 
-    constructor(client: Client) {
+    constructor(client: ClientInterface) {
         this.client = client;
         this.name = 'RouteLoader';
     }
@@ -48,7 +48,7 @@ export default class RouteLoader {
                 const RouteClass = routeModule.default;
                 
                 if (RouteClass.prototype instanceof RoutesModel) {
-                    const routeInstance = new RouteClass(this.client.app, { path: '/', name: 'Default Route', description: 'No Description' });
+                    const routeInstance = new RouteClass(this.client, { path: '/', name: 'Default Route', description: 'No Description' });
 
                     if (routeInstance instanceof RoutesModel) {
                         this.client.app.use(routeInstance.path, (req, res, next) => {

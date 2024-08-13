@@ -1,5 +1,6 @@
-import RoutesModel from "../models/RoutesModel";
+import { Request, Response } from 'express'
 
+import RoutesModel from "../models/RoutesModel";
 export default class LandingPage extends RoutesModel {
   constructor(client: any) {
     super(client, {
@@ -10,7 +11,7 @@ export default class LandingPage extends RoutesModel {
   }
 
     public run(): void {
-        this.client.get(this.path, (req, res) => {
+        this.client.app.get(this.path, (req: Request, res: Response) => {
             res.status(200).send('OK');
         });
     }

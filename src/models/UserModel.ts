@@ -2,14 +2,14 @@ import { UserOptions } from "../utils/types";
 
 export default class UserModel {
     public name: string;
-    public id: number;
+    private money: number;
     private email: string;
     private isAdmin: boolean;
     private password: string;
     constructor(options: UserOptions) {
-        this.id = options.id
         this.name = options.name
         this.email = options.email 
+        this.money = options.money
         this.password = options.password
         this.isAdmin = options.isAdmin || false
     }
