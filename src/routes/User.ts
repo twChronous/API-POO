@@ -28,6 +28,9 @@ export default class UserPage extends RoutesModel {
         this.client.app.get(`${this.path}/:id`, (req: Request, res: Response) => {
             this.getById(req, res);
         });
+        this.client.app.put(this.path, (req: Request, res: Response) => {
+            this.UpdateUser(req, res);
+        });
     }
     private async ShowAll(req: Request, res: Response): Promise<void> {
         let data = await this.database.findAll();
@@ -64,6 +67,13 @@ export default class UserPage extends RoutesModel {
         await this.database.findOne({ _id: req.params.id })
             .then((user: UserOptions) => res.status(200).send(user))
             .catch((err: any) => res.status(404).json({ error: err.message }))
-      }
+    }
+    private async UpdateUser(req: Request, res: Response): Promise<void | any> {
+        if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
+        req.body.money = parseFloat(req.body.money);
+        await this.database.update(req.body._id!, { $set: req.body })
+            .then((user: UserOptions) => res.status(200).send(user))
+            .catch((err: any) => res.status(400).json({ error: err.message }))
+    }
 }
 

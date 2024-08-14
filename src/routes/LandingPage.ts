@@ -17,5 +17,9 @@ export default class LandingPage extends RoutesModel {
             const data = { message: 'Hello World!' };
             res.status(200).send(data);
         });
+        this.client.app.delete(this.path, (req: Request, res: Response) => {
+            const data = { message: 'Pagando bem, que mal tem' };
+            res.status(402).send(data);
+        });
     }
 }

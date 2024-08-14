@@ -1,0 +1,22 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3333/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id": "66bbe5a1cf7f7f3fa94aef8f",
+      "name": "Lufas",
+      "email": "user7@mail.com",
+      "isAdmin": false,
+      "money": 999,
+      "password": "123456"
+  }
+}
