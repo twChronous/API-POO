@@ -55,6 +55,6 @@ export default class MongoRepository<T extends IRepositoryDocument> {
       doc: UpdateQuery<T> = {},
       options: any = {},
     ): Promise<Query<any, T>> {
-      return this.model.updateOne(filter, doc, options)
+      return this.model.findByIdAndUpdate(filter, doc, options)
     }
   }

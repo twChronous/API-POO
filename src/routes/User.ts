@@ -71,7 +71,10 @@ export default class UserPage extends RoutesModel {
     private async UpdateUser(req: Request, res: Response): Promise<void | any> {
         if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
         req.body.money = parseFloat(req.body.money);
-        await this.database.update(req.body._id!, { $set: req.body })
+
+        await this.database.update({ _id: req.body.id! }, req.body)
+            .catch((err: any) => res.status(400).json({ error: err.message }))
+        await this.database.findOne({ _id: req.body.id! })
             .then((user: UserOptions) => res.status(200).send(user))
             .catch((err: any) => res.status(400).json({ error: err.message }))
     }
