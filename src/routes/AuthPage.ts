@@ -21,7 +21,7 @@ export default class AuthRoutes extends RoutesModel {
   public run(): void {
     this.client.app.post(`${this.path}/login`, this.loginUser.bind(this));
     this.client.app.get(`${this.path}/verify-email`, this.verifyEmail.bind(this));
-    this.client.app.use(this.verifyJWT.bind(this)); // Middleware para verificar o JWT em rotas subsequentes
+    this.client.app.use(this.verifyJWT.bind(this)); 
   }
 
   private async loginUser(req: Request, res: Response): Promise<void | any> {
@@ -29,19 +29,19 @@ export default class AuthRoutes extends RoutesModel {
 
     const user = await this.client.users.findOne({ email });
     if (!user) return res.status(404).json({ error: 'User not found' });
-
     if (!(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ error: 'Invalid password' });
-
+    
+    const token = JWT.sign({ id: user._id }, process.env.SECRET!, {
+        expiresIn: 86400,
+    });
     if (!user.verified) {
-      return res.status(401).json({
-        error: 'Your account has not been verified',
+        return res.send({
+            email, 
+            token,
+            error: 'Your account has not been verified',
       });
     }
-
-    const token = JWT.sign({ id: user._id }, process.env.SECRET!, {
-      expiresIn: 86400,
-    });
 
     return res.send({ email, token });
   }

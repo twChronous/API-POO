@@ -32,15 +32,6 @@ export default class UserPage extends RoutesModel {
     }
     private async ShowAll(req: Request, res: Response): Promise<void> {
         let data = await this.client.users.findAll();
-        // for(let i = 0; i < data.length; i++) {
-        //     const user = data[i];
-        //     data[i] = {
-        //         _id: user._id,
-        //         name: user.name,
-        //         email: user.email,
-        //         isAdmin: user.isAdmin,
-        //         money: user.money
-        // }};
         res.status(data.length > 0 ? 200 : 204).send(data);
     }
     private async CreateUser(req: Request, res: Response): Promise<void | any> {
