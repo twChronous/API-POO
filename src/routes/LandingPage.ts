@@ -1,8 +1,10 @@
 import { Request, Response } from 'express'
 
 import RoutesModel from "../models/RoutesModel";
+import { ClientInterface } from "../utils/types";
+
 export default class LandingPage extends RoutesModel {
-  constructor(client: any) {
+  constructor(client: ClientInterface) {
     super(client, {
         path: "/",
         name: "LandingPage",

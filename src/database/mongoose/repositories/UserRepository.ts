@@ -1,16 +1,7 @@
-import mongoose, { Mongoose, Document } from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
 import MongoRepository from '../MongoRepository';
 import UserSchema from '../schemas/UserSchema';
-import {UserOptions } from '../../../utils/types'
-
-interface IUserDocument extends Document {
-    _id: string;
-    money: number;
-    isAdmin: boolean;
-    name: string;
-    password: string;
-    email: string;
-}
+import {UserOptions, IUserDocument } from '../../../utils/types'
 
 
 export default class UserRepository extends MongoRepository<IUserDocument> {
@@ -26,7 +17,7 @@ export default class UserRepository extends MongoRepository<IUserDocument> {
             isAdmin: entity.isAdmin,
             password: entity.password,
             money: 0.00,
-            ...(super.parse(entity) || {})
+            ...(parse(entity) || {})
         };
     }
 }
