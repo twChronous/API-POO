@@ -1,15 +1,14 @@
 import express, { Application } from 'express';
 
-import { MongoDB } from './database';
 import Loaders from './loaders/index';
+import { Users } from './database/models';
 
 export default class Client {
     public app: Application;
-    public database: MongoDB | false;
-    
+    users: typeof Users;
     constructor() {
+        this.users = Users;
         this.app = express();
-        this.database = false;
         this.app.use(express.json());
     }
 

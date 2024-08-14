@@ -1,26 +1,26 @@
 import { Application } from 'express';
-import type {
-    Document,
-    FilterQuery,
-    UpdateQuery,
-} from 'mongoose'
 
-import { MongoDB } from '../database';
-import DatabaseUtils from '../utils/DatabaseUtils';
-import { UserRepository } from '../database/mongoose/repositories';
+import { Document } from '../database/Schema'
+import { Users } from '../database/models';
 
+export interface BaseSchema {
+    _id: string
+    createdAt: string
+    updatedAt: string
+  }
 export interface RoutesModelOptions {
     path: string,
     name: string,
     description : string,
 }
 export interface UserOptions {
-    _id?: String,
+    _id?: string,
     name: string,
     email: string,
     money: number,
     password: string,
     isAdmin: boolean,
+    verified: boolean,
 }
 export interface IUserDocument extends Document {
     _id: string;
@@ -30,21 +30,9 @@ export interface IUserDocument extends Document {
     password: string;
     email: string;
 }
-export interface DatabaseOptions extends MongoDB {
-    users: DatabaseUserOptions;
-}
-export interface DatabaseUserOptions extends UserRepository  {
-    add: (entity: any) => Promise<any>; // Ajuste o tipo de parâmetro e retorno conforme necessário
-    findOne: (entity: any) => Promise<any>; // Ajuste o tipo de parâmetro e retorno conforme necessário
-    get: (id: string, projection?: any) => Promise<any>; // Ajuste o tipo de parâmetro e retorno conforme necessário
-    remove: (id: string) => Promise<any>; // Ajuste o tipo de parâmetro e retorno conforme necessário
-    update: (filter: FilterQuery<IUserDocument>, doc?: UpdateQuery<IUserDocument>, options?: any) => Promise<any>; 
-    findAll: (projection?: any) => Promise<any[]>; // Ajuste o tipo de parâmetro e retorno conforme necessário
-}
 
 export interface ClientInterface {
-    database: DatabaseOptions;
-    DatabaseUtils?: DatabaseUtils;
+    users: typeof Users;
     app: Application;
     LOG(...args: string[]): void;
     LOG_ERR(...args: string[]): void;
