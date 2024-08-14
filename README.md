@@ -1,13 +1,14 @@
 # Express Backend Server
 
-Este projeto é um servidor backend simples construído com [Express](https://expressjs.com/) e TypeScript, seguindo os princípios de programação orientada a objetos (OOP). 
+Este projeto é um servidor backend simples construído com [Express](https://expressjs.com/) e TypeScript, seguindo os princípios de programação orientada a objetos (OOP).
 
 ## Pré-requisitos
 
 Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 
 - [Bun](https://bun.sh/) (recomendado)
-- [Node.js](https://nodejs.org/) (caso queira utilizar o node ao invés do bun, use versão 14 ou superior)
+- [Node.js](https://nodejs.org/) (caso queira utilizar o Node ao invés do Bun, use a versão 14 ou superior)
+- [Bruno](https://www.usebruno.com/) (recomendado)
 - [TypeScript](https://www.typescriptlang.org/)
 
 ## Configuração do Projeto
@@ -39,12 +40,15 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 
 A estrutura do projeto segue um design orientado a objetos. Aqui estão os diretórios principais e seus propósitos:
 
+- **bruno_reqs/**: Contém os arquivos de ferramentas de teste do [Bruno](https://www.usebruno.com/).
 - **src/**: Contém o código-fonte principal do projeto.
-  - **controllers/**: Armazena os controladores que gerenciam a lógica de negócio.
+  - **database/**: Faz conexão com o banco de dados além de criar os schemas necessários.
   - **models/**: Contém definições de modelos e esquemas de dados.
   - **routes/**: Define as rotas para o servidor.
-  - **services/**: Inclui serviços que fornecem funcionalidades auxiliares ou integradas.
-  - **index.ts**: Ponto de entrada do aplicativo, onde o servidor é inicializado.
+  - **utils/**: Inclui funcionalidades auxiliares ou integradas.
+  - **Client.ts**: Arquivo principal do código, onde se inicializa todo o servidor.
+  - **index.ts**: Ponto de entrada do aplicativo, onde o servidor é instanciado.
+- **.env**: Contém configurações e dados sensíveis do projeto.
 
 ## Executando o Servidor
 
@@ -60,7 +64,7 @@ Usando npm (após compilar TypeScript para JavaScript):
 npm start
 ```
 
-O servidor será iniciado na porta definida (por padrão, `8080`). Você pode acessar o servidor no navegador ou via ferramenta de API no endereço: `http://localhost:8080`.
+O servidor será iniciado na porta definida (por padrão, `3333`). Você pode acessar o servidor no navegador ou via ferramenta de API no endereço: `http://localhost:3333`.
 
 ## Endpoints Disponíveis
 
@@ -71,7 +75,7 @@ O servidor será iniciado na porta definida (por padrão, `8080`). Você pode ac
 
   ```http
   GET / HTTP/1.1
-  Host: localhost:8080
+  Host: localhost:3333
   ```
 
 - **Exemplo de Resposta**:
@@ -82,15 +86,9 @@ O servidor será iniciado na porta definida (por padrão, `8080`). Você pode ac
   }
   ```
 
-## Contribuição
+## Ferramenta de Verificação
 
-Se você quiser contribuir para este projeto, siga os passos abaixo:
-
-1. Fork o repositório.
-2. Crie uma nova branch para a sua feature (`git checkout -b feature/nome-da-feature`).
-3. Faça commit das suas alterações (`git commit -m 'Adicionei uma nova feature'`).
-4. Faça push para a branch (`git push origin feature/nome-da-feature`).
-5. Abra um pull request.
+Este projeto utiliza o [Bruno](https://www.usebruno.com/) para verificar e testar as rotas, garantindo que todas estejam funcionando conforme o esperado.
 
 ## Licença
 

@@ -14,7 +14,8 @@ export default class LandingPage extends RoutesModel {
 
     public run(): void {
         this.client.app.get(this.path, (req: Request, res: Response) => {
-            res.status(200).send('OK');
+            const data = { message: 'Hello World!' };
+            res.status(200).send(data);
         });
     }
 }
