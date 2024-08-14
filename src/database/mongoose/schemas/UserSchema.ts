@@ -10,6 +10,10 @@ export default new Schema({
     type: Boolean,
     required: true
   },
+  verified: {
+    type: Boolean,
+    required: true
+  },
   name: {
     type: String,
     required: true
