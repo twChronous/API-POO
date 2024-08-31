@@ -1,0 +1,19 @@
+meta {
+  name: createTodo
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:3333/todos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Outra task louca ai",
+    "isDone": "false",
+    "description": "tem que fazer a task ne mano"
+  }  
+}

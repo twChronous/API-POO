@@ -1,5 +1,5 @@
 import { connect } from '../database/connect';
-import { Users } from '../database/models';
+import { Users, Todos } from '../database/models';
 import { ClientInterface } from '../utils/types';
 
 export default class DatabaseLoader {
@@ -23,6 +23,7 @@ export default class DatabaseLoader {
         try {
             await connect();
             this.client.users = Users;
+            this.client.todos = Todos;
         } catch (error: any) {
             this.client.LOG_ERR(error, this.name);
         }
