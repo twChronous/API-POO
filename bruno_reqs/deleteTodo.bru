@@ -1,0 +1,18 @@
+meta {
+  name: deleteTodo
+  type: http
+  seq: 10
+}
+
+delete {
+  url: http://localhost:3333/todos/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "66d34a23a26a9bada6aa0312",
+    "ownerID": "66bbd670a417047d55be0a59"
+  }
+}

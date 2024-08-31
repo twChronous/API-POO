@@ -1,15 +1,16 @@
 import bcrypt from 'bcrypt'
+import { Types } from 'mongoose'
 
 import { Schema, Document } from '../Schema'
 import type { UserOptions } from '../../utils/types'
 
 const UserSchema = new Schema<UserOptions & Document>({
   verified: { type: Boolean, default: false },
-  money: { type: Number, default: 0.0 },
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
+  todos: [{ type: Types.ObjectId, ref: 'Todo' }],
 })
 
 UserSchema.pre('save', async function (next) {

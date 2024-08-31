@@ -1,0 +1,21 @@
+meta {
+  name: updateTodos
+  type: http
+  seq: 12
+}
+
+put {
+  url: http://localhost:3333/todos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id": "66d34a41a26a9bada6aa0315",
+      "name": "Outra task louca ai",
+      "description": "tem que fazer a task ne mano",
+      "isDone": false,
+      "ownerID": "66bbd670a417047d55be0a59"
+  }
+}

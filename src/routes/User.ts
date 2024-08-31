@@ -39,19 +39,35 @@ export default class UserPage extends RoutesModel {
             if (await this.client.users.findOne({ email: req.body.email })) {
                 return res.status(400).json({ message: 'email already exists' })
         }
-        req.body.money = parseFloat(req.body.money);
+
         await this.client.users.add(req.body)
             .then((user: UserOptions) => res.status(201).send(user))
             .catch((err: any) => res.status(400).json({ error: err.message }))
     }
-    private async removeUser(req: Request, res: Response): Promise<void | any> {
-        const user = await this.client.users.findOne({ _id: req.body.id })
-        if(!user) return res.status(404).json({error: 'User not found'})
-        if(user._id != req.body.id && !user.isAdmin) return res.status(403).json({error: 'Permission denied'})
-        await this.client.users.remove(req.body.id)
-            .then((user: UserOptions) => res.status(200).send(user._id))
-            .catch((err: any) => res.status(400).json({ error: err.message }))
-    }
+    private async removeUser(req: Request, res: Response) {
+        try {
+            const user = await this.client.users.findOne({ _id: req.body.id });
+
+            if (!user) return res.status(404).json({ error: 'User not found' });
+            
+            // if (user!._id !== req.body.id && !user!.isAdmin) {
+            //     return res.status(403).json({ error: 'Permission denied' });
+            // }
+    
+            // Remove todos os todos associados ao usuário, um por um
+            for (const todoId of user!.todos) {
+                await this.client.todos.remove((todoId._id)!.toString());
+            }
+    
+            // Remove o usuário
+            await this.client.users.remove(req.body.id);
+    
+            // Retorna o ID do usuário removido com status 200
+            res.status(200).send({ removedUserId: req.body.id });
+        } catch (err: any) {
+            res.status(400).json({ error: err.message });
+        }
+    }    
     private async getById(req: Request, res: Response): Promise<void | any> {
         await this.client.users.findOne({ _id: req.params.id })
             .then((user) => res.status(200).send(user))
@@ -59,7 +75,6 @@ export default class UserPage extends RoutesModel {
     }
     private async UpdateUser(req: Request, res: Response): Promise<void | any> {
         if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
-        req.body.money = parseFloat(req.body.money);
 
         await this.client.users.update({ _id: req.body.id! }, req.body)
             .catch((err: any) => res.status(400).json({ error: err.message }))

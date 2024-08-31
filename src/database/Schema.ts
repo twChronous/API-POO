@@ -1,6 +1,7 @@
 import {
     Model,
     Document,
+    Types,
     Schema as MongooseSchema,
     SchemaDefinition,
   } from 'mongoose';
@@ -17,5 +18,5 @@ import {
     }
   }
   
-  export type { Model, Document };
+  export type { Model, Document, Types };
   

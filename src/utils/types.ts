@@ -17,7 +17,7 @@ export interface UserOptions {
     _id?: string;
     name: string;
     email: string;
-    money: number;
+    todos: TodoOptions[];
     password: string;
     isAdmin: boolean;
     verified: boolean;
@@ -25,6 +25,7 @@ export interface UserOptions {
 export interface TodoOptions {
     _id?: string;
     name: string;
+    ownerID: UserOptions;
     description: string;
     isDone: boolean;
 }

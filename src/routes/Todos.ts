@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
 import RoutesModel from "../models/RoutesModel";
-import { ClientInterface, TodoOptions } from "../utils/types";
+import { ClientInterface } from "../utils/types";
 
 export default class TodoPage extends RoutesModel {
     
@@ -33,29 +33,53 @@ export default class TodoPage extends RoutesModel {
         let data = await this.client.todos.findAll();
         res.status(data.length > 0 ? 200 : 204).send(data);
     }
-    private async CreateTodo(req: Request, res: Response): Promise<void | any> {
-        // TODO: Add ownerID here or in the reverse in the User, to make only the owner of this todo see it or edit it
-        await this.client.todos.add(req.body)
-            .then((todo: TodoOptions) => res.status(201).send(todo))
-            .catch((err: any) => res.status(400).json({ error: err.message }))
+    private async CreateTodo(req: Request, res: Response): Promise<void> {
+        try {
+            const todo = await this.client.todos.add({
+                ...req.body,
+                ownerID: req.body.id, 
+            });
+    
+            await this.client.users.update(
+                { _id: req.body.id }, 
+                { $push: { todos: todo._id } } 
+            );
+    
+            res.status(201).send(todo);
+        } catch (err: any) {
+            res.status(400).json({ error: err.message });
+        }
     }
-    private async removeTodo(req: Request, res: Response): Promise<void | any> {
-        const todo = await this.client.todos.findOne({ _id: req.body.id })
-        if(!todo) return res.status(404).json({error: 'todo not found'})
-        if(todo._id != req.body.id) return res.status(403).json({error: 'Permission denied'})
-        await this.client.todos.remove(req.body.id)
-            .then((todo: TodoOptions) => res.status(200).send(todo._id))
-            .catch((err: any) => res.status(400).json({ error: err.message }))
+    private async removeTodo(req: Request, res: Response) {
+        try {
+            const user = await this.client.users.findOne({ _id: req.body.ownerID });
+            const todo = await this.client.todos.findOne({ _id: req.body.id });
+    
+            // Verify if to-do exists and if the user has the permission to remove it
+            if (!todo) return res.status(404).json({ error: 'User not found' });
+            if (!user?.todos.some((t) => t.toString() === req.body.id)) {
+                res.status(403).json({ error: 'Permission denied' });
+            }
+    
+            await this.client.todos.remove(req.body.id);
+    
+            await this.client.users.update(
+                { _id: req.body.ownerID },
+                { $pull: { todos: req.body.id } }
+            );
+            res.status(200).send({ removedTodoId: req.body.id });
+        } catch (err: any) {
+            res.status(400).json({ error: err.message });
+        }
     }
+    
     private async getById(req: Request, res: Response): Promise<void | any> {
         await this.client.todos.findOne({ _id: req.params.id })
             .then((todo) => res.status(200).send(todo))
             .catch((err: any) => res.status(404).json({ error: err.message }))
     }
     private async UpdateTodo(req: Request, res: Response): Promise<void | any> {
-        if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
-        req.body.money = parseFloat(req.body.money);
-
+        if(!req.body.id) res.status(400).send({ error: 'id is required' })
         await this.client.todos.update({ _id: req.body.id! }, req.body)
             .catch((err: any) => res.status(400).json({ error: err.message }))
         await this.client.todos.findOne({ _id: req.body.id! })
