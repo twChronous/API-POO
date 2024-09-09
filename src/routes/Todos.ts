@@ -22,7 +22,6 @@ export default class TodoPage extends RoutesModel {
     }
     private async ShowAll(req: Request, res: Response) {
         if (!req.body.auth.isAdmin) {
-            console.log(req.body.auth)
             const data = await this.client.todos.findAll({ ownerID: req.body.auth.id });
             return res.status(data.length > 0 ? 200 : 204).send(data);
         }
