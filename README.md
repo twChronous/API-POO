@@ -9,6 +9,7 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 - [Bun](https://bun.sh/) (recomendado)
 - [Node.js](https://nodejs.org/) (caso queira utilizar o Node ao invés do Bun, use a versão 14 ou superior)
 - [Bruno](https://www.usebruno.com/) (recomendado)
+- [MongoDB + Mongoose](https://mongoosejs.com/) 
 - [TypeScript](https://www.typescriptlang.org/)
 
 ## Configuração do Projeto
@@ -35,6 +36,15 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 3. Configure o TypeScript:
 
    Certifique-se de que o arquivo `tsconfig.json` esteja configurado corretamente para suportar módulos ES6 e outras opções desejadas.
+
+4. Configure as variaveis do ambiente:
+
+   Crie um arquivo `.env`
+   ```env
+    PORT=3333
+    JWT_SECRET=A very secret word
+    MONGODB_URI=mongodb+srv://...
+   ```
 
 ## Estrutura do Projeto
 
