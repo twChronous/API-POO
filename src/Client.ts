@@ -1,15 +1,34 @@
 import express, { Application } from 'express';
+import cors from 'cors';
 
 import Loaders from './loaders/index';
-import { Users } from './database/models';
+import { Users, Todos } from './database/models';
 
-export default class Client {
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true, 
+  };
+  
+interface ClientInterface {
+    users: typeof Users;
+    todos: typeof Todos;
+    app: Application;
+    LOG(...args: string[]): void;
+    LOG_ERR(...args: string[]): void;
+    Error(...args: string[]): void;
+}
+
+export default class Client implements ClientInterface {
     public app: Application;
     users: typeof Users;
+    todos: typeof Todos;
+
     constructor() {
         this.users = Users;
+        this.todos = Todos;
         this.app = express();
         this.app.use(express.json());
+        this.app.use(cors(corsOptions));
     }
 
     public startServer(port: number): void {
