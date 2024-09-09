@@ -29,17 +29,14 @@ export default class TodoPage extends RoutesModel {
         res.status(data.length > 0 ? 200 : 204).send(data);
     }
     private async CreateTodo(req: Request, res: Response) {
-        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
-            return res.sendStatus(403); // Forbidden
-        }
         try {
             const todo = await this.client.todos.add({
                 ...req.body,
-                ownerID: req.body.id, 
+                ownerID: req.body.auth.id, 
             });
     
             await this.client.users.update(
-                { _id: req.body.id }, 
+                { _id: req.body.auth.id }, 
                 { $push: { todos: todo._id } } 
             );
     
@@ -49,23 +46,19 @@ export default class TodoPage extends RoutesModel {
         }
     }
     private async removeTodo(req: Request, res: Response) {
-        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
+        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.ownerID) {
             return res.sendStatus(403); // Forbidden
         }
         try {
-            const user = await this.client.users.findOne({ _id: req.body.ownerID });
             const todo = await this.client.todos.findOne({ _id: req.body.id });
-    
-            // Verify if to-do exists and if the user has the permission to remove it
+
+
             if (!todo) return res.status(404).json({ error: 'User not found' });
-            if (!user?.todos.some((t) => t.toString() === req.body.id)) {
-                res.status(403).json({ error: 'Permission denied' });
-            }
-    
+
             await this.client.todos.remove(req.body.id);
     
             await this.client.users.update(
-                { _id: req.body.ownerID },
+                { _id: req.body.auth.id },
                 { $pull: { todos: req.body.id } }
             );
             res.status(200).send({ removedTodoId: req.body.id });
@@ -83,7 +76,7 @@ export default class TodoPage extends RoutesModel {
             .catch((err: any) => res.status(404).json({ error: err.message }))
     }
     private async UpdateTodo(req: Request, res: Response): Promise<void | any> {
-        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
+        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.ownerID) {
             return res.sendStatus(403); // Forbidden
         }
         if(!req.body.id) res.status(400).send({ error: 'id is required' })

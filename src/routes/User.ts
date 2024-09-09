@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
-
-
+import bcrypt from 'bcrypt';
 
 import RoutesModel from "../models/RoutesModel";
 import { ClientInterface } from "../utils/types";
@@ -23,7 +22,9 @@ export default class UserPage extends RoutesModel {
     }
     private async ShowAll(req: Request, res: Response): Promise<void | any> {
         if (!req.body.auth.isAdmin) {
-            return res.sendStatus(403); // Forbidden
+            return await this.client.users.findOne({ _id: req.body.auth.id })
+                    .then((user) => res.status(200).send(user))
+                    .catch((err: any) => res.status(404).json({ error: err.message }))
         }
         let data = await this.client.users.findAll();
         res.status(data.length > 0 ? 200 : 204).send(data);
@@ -37,7 +38,12 @@ export default class UserPage extends RoutesModel {
 
             if (!user) return res.status(404).json({ error: 'User not found' });
             
-    
+            const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+
+            if (!isPasswordValid) {
+                console.log('Invalid password');
+                return res.status(400).json({ error: 'Invalid password' });
+            }
             // Remove todos os todos associados ao usuário, um por um
             for (const todoId of user!.todos) {
                 await this.client.todos.remove((todoId._id)!.toString());
