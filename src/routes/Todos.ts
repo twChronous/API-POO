@@ -21,6 +21,8 @@ export default class TodoPage extends RoutesModel {
         this.client.app.put(this.path, authenticateToken, this.UpdateTodo.bind(this));  
     }
     private async ShowAll(req: Request, res: Response) {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin) {
             const data = await this.client.todos.findAll({ ownerID: req.body.auth.id });
             return res.status(data.length > 0 ? 200 : 204).send(data);
@@ -29,6 +31,8 @@ export default class TodoPage extends RoutesModel {
         res.status(data.length > 0 ? 200 : 204).send(data);
     }
     private async CreateTodo(req: Request, res: Response) {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         try {
             const todo = await this.client.todos.add({
                 ...req.body,
@@ -46,6 +50,8 @@ export default class TodoPage extends RoutesModel {
         }
     }
     private async removeTodo(req: Request, res: Response) {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.ownerID) {
             return res.sendStatus(403); // Forbidden
         }
@@ -68,6 +74,8 @@ export default class TodoPage extends RoutesModel {
     }
     
     private async getById(req: Request, res: Response): Promise<void | any> {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
             return res.sendStatus(403); // Forbidden
         }
@@ -76,6 +84,8 @@ export default class TodoPage extends RoutesModel {
             .catch((err: any) => res.status(404).json({ error: err.message }))
     }
     private async UpdateTodo(req: Request, res: Response): Promise<void | any> {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.ownerID) {
             return res.sendStatus(403); // Forbidden
         }

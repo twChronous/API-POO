@@ -21,6 +21,8 @@ export default class UserPage extends RoutesModel {
         this.client.app.put(this.path, authenticateToken, this.UpdateUser.bind(this));
     }
     private async ShowAll(req: Request, res: Response): Promise<void | any> {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin) {
             return await this.client.users.findOne({ _id: req.body.auth.id })
                     .then((user) => res.status(200).send(user))
@@ -33,6 +35,8 @@ export default class UserPage extends RoutesModel {
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
             return res.sendStatus(403); // Forbidden
         }
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         try {
             const user = await this.client.users.findOne({ _id: req.body.id });
 
@@ -59,15 +63,20 @@ export default class UserPage extends RoutesModel {
         }
     }    
     private async getByToken(req: Request, res: Response): Promise<void | any> {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         await this.client.users.findOne({ _id: req.body.auth.id })
             .then((user) => res.status(200).send(user))
             .catch((err: any) => res.status(404).json({ error: err.message }))
     }
     private async UpdateUser(req: Request, res: Response): Promise<void | any> {
+        let verify = await this.client.users.findOne({ _id: req.body.auth.id })
+        if (!verify) return res.sendStatus(403)
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
             return res.sendStatus(403); // Forbidden
         }
         if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
+        console.log(req.body.password)
         const hash = await bcrypt.hash(req.body.password, 10)
         if (req.body.password.substring(0, 7) !== '$2b$10$') req.body.password = hash
         await this.client.users.update({ _id: req.body.id! }, req.body)
