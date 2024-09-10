@@ -5,17 +5,16 @@ meta {
 }
 
 post {
-  url: http://localhost:3333/users
+  url: http://localhost:3333/auth/create-user
   body: json
   auth: none
 }
 
 body:json {
   {
-    "money": "999",
     "isAdmin": "false",
     "name": "Lupas",
     "password": "password",
-    "email": "user10@mail.com"
+    "email": "user1@mail.com"
   }
 }

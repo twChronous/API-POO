@@ -50,6 +50,7 @@ export default class AuthRoutes extends RoutesModel {
             return res.status(403).json({
                 email,
                 token,
+                isAdmin: user.isAdmin,
                 error: 'Your account has not been verified',
             });
         }

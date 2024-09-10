@@ -17,7 +17,7 @@ export default class UserPage extends RoutesModel {
     public run():void {
         this.client.app.get(this.path, authenticateToken, this.ShowAll.bind(this));
         this.client.app.delete(this.path, authenticateToken, this.removeUser.bind(this));
-        this.client.app.get(this.path, authenticateToken, this.getById.bind(this));
+        this.client.app.get(`${this.path}/token`, authenticateToken, this.getByToken.bind(this));
         this.client.app.put(this.path, authenticateToken, this.UpdateUser.bind(this));
     }
     private async ShowAll(req: Request, res: Response): Promise<void | any> {
@@ -40,7 +40,7 @@ export default class UserPage extends RoutesModel {
             
             const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
 
-            if (!isPasswordValid) {
+            if (!isPasswordValid && !req.body.auth.isAdmin) {
                 console.log('Invalid password');
                 return res.status(400).json({ error: 'Invalid password' });
             }
@@ -58,11 +58,8 @@ export default class UserPage extends RoutesModel {
             res.status(400).json({ error: err.message });
         }
     }    
-    private async getById(req: Request, res: Response): Promise<void | any> {
-        if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
-            return res.sendStatus(403); // Forbidden
-        }
-        await this.client.users.findOne({ _id: req.params.id })
+    private async getByToken(req: Request, res: Response): Promise<void | any> {
+        await this.client.users.findOne({ _id: req.body.auth.id })
             .then((user) => res.status(200).send(user))
             .catch((err: any) => res.status(404).json({ error: err.message }))
     }
@@ -71,7 +68,8 @@ export default class UserPage extends RoutesModel {
             return res.sendStatus(403); // Forbidden
         }
         if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
-
+        const hash = await bcrypt.hash(req.body.password, 10)
+        if (req.body.password.substring(0, 7) !== '$2b$10$') req.body.password = hash
         await this.client.users.update({ _id: req.body.id! }, req.body)
             .catch((err: any) => res.status(400).json({ error: err.message }))
         await this.client.users.findOne({ _id: req.body.id! })
