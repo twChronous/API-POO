@@ -6,7 +6,7 @@ import { Users, Todos } from './database/models';
 import { ClientInterface } from './utils/types';
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN,
     credentials: true, 
   };
   

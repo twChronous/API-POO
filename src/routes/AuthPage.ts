@@ -41,7 +41,7 @@ export default class AuthRoutes extends RoutesModel {
 
         // Generate JWT token after all validations
         const token = JWT.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET!, {
-            expiresIn: 86400, // 24 hours
+            expiresIn: process.env.JWT_EXPIRATION!, // 24 hours
         });
 
         // Check if the user's account is verified
@@ -90,7 +90,7 @@ export default class AuthRoutes extends RoutesModel {
             return res.status(400).json({ error: 'Error while creating user' });
         }
         const token = JWT.sign({ id: user._id,isAdmin: user.isAdmin }, process.env.JWT_SECRET!, {
-            expiresIn: 86400, // 24 hours
+            expiresIn: process.env.JWT_EXPIRATION!, // 24 hours
         });
      
         return res.json({ email: user.email, token });
