@@ -1,16 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface JwtPayload {
-    userId: string;
-    isAdmin: boolean;
-}
-
-interface CustomRequest extends Request {
-    user?: JwtPayload;
-}
-
-export const authenticateToken = (req: CustomRequest, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     let token;
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -29,7 +20,7 @@ export const authenticateToken = (req: CustomRequest, res: Response, next: NextF
             return res.sendStatus(403); // Forbidden
         }
 
-        req.body.auth = decoded as JwtPayload; // Attach the user info to the request
+        req.body.auth = decoded;
         next();
     });
 };
