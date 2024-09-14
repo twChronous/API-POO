@@ -3,7 +3,7 @@ import JWT from 'jsonwebtoken';
 import { Request, Response } from 'express';
 
 import RoutesModel from "../models/RoutesModel";
-import { ClientInterface, UserOptions } from "../utils/types";
+import { ClientInterface } from "../utils/types";
 
 export default class AuthRoutes extends RoutesModel {
   constructor(client: ClientInterface) {
@@ -50,7 +50,6 @@ export default class AuthRoutes extends RoutesModel {
             return res.status(403).json({
                 email,
                 token,
-                isAdmin: user.isAdmin,
                 error: 'Your account has not been verified',
             });
         }
@@ -90,7 +89,7 @@ export default class AuthRoutes extends RoutesModel {
             console.log('Error while creating user');
             return res.status(400).json({ error: 'Error while creating user' });
         }
-        const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET!, {
+        const token = JWT.sign({ id: user._id,isAdmin: user.isAdmin }, process.env.JWT_SECRET!, {
             expiresIn: 86400, // 24 hours
         });
      

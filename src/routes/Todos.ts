@@ -58,7 +58,6 @@ export default class TodoPage extends RoutesModel {
         try {
             const todo = await this.client.todos.findOne({ _id: req.body.id });
 
-
             if (!todo) return res.status(404).json({ error: 'User not found' });
 
             await this.client.todos.remove(req.body.id);

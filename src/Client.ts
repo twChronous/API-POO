@@ -3,20 +3,13 @@ import cors from 'cors';
 
 import Loaders from './loaders/index';
 import { Users, Todos } from './database/models';
+import { ClientInterface } from './utils/types';
 
 const corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true, 
   };
   
-interface ClientInterface {
-    users: typeof Users;
-    todos: typeof Todos;
-    app: Application;
-    LOG(...args: string[]): void;
-    LOG_ERR(...args: string[]): void;
-    Error(...args: string[]): void;
-}
 
 export default class Client implements ClientInterface {
     public app: Application;
@@ -38,7 +31,7 @@ export default class Client implements ClientInterface {
         this.initializeLoaders();
     }
 
-    public async initializeLoaders(): Promise<void> {
+    private async initializeLoaders(): Promise<void> {
         const loaders: Array<typeof Loaders[keyof typeof Loaders]> = Object.values(Loaders);
         let loadedCount = 0;
         for (const LoaderClass of loaders) {

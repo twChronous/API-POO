@@ -33,7 +33,7 @@ export default class UserPage extends RoutesModel {
     }
     private async removeUser(req: Request, res: Response) {
         if (!req.body.auth.isAdmin && req.body.auth.id !== req.body.id) {
-            return res.sendStatus(403); // Forbidden
+            return res.sendStatus(403); 
         }
         let verify = await this.client.users.findOne({ _id: req.body.auth.id })
         if (!verify) return res.sendStatus(403)
@@ -52,11 +52,8 @@ export default class UserPage extends RoutesModel {
             for (const todoId of user!.todos) {
                 await this.client.todos.remove((todoId._id)!.toString());
             }
-    
-            // Remove o usuário
             await this.client.users.remove(req.body.id);
     
-            // Retorna o ID do usuário removido com status 200
             res.status(200).send({ removedUserId: req.body.id });
         } catch (err: any) {
             res.status(400).json({ error: err.message });
@@ -76,7 +73,7 @@ export default class UserPage extends RoutesModel {
             return res.sendStatus(403); // Forbidden
         }
         if (req.body.password && req.body.password.length < 6) return res.status(400).json({error: 'Password is less than 6 digits'}) 
-        console.log(req.body.password)
+
         const hash = await bcrypt.hash(req.body.password, 10)
         if (req.body.password.substring(0, 7) !== '$2b$10$') req.body.password = hash
         await this.client.users.update({ _id: req.body.id! }, req.body)
