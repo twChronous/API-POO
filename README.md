@@ -1,13 +1,12 @@
-# Express Backend Server
+# OOP Express Backend Server
 
-Este projeto é um servidor backend simples construído com [Express](https://expressjs.com/) e TypeScript, seguindo os princípios de programação orientada a objetos (OOP).
+Este projeto é um servidor backend simples construído com [Express](https://expressjs.com/) e TypeScript, seguindo os princípios de programação orientada a objetos (POO).
 
 ## Pré-requisitos
 
 Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 
 - [Bun](https://bun.sh/) (recomendado)
-- [Node.js](https://nodejs.org/) (caso queira utilizar o Node ao invés do Bun, use a versão 14 ou superior)
 - [Bruno](https://www.usebruno.com/) (recomendado)
 - [MongoDB + Mongoose](https://mongoosejs.com/) 
 - [TypeScript](https://www.typescriptlang.org/)
@@ -17,7 +16,7 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/twChronous/projetodoiso.git
+   git clone https://github.com/twChronous/API-POO.git
    cd projetodoiso
    ```
 
@@ -26,11 +25,6 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
    Usando Bun:
    ```bash
    bun install
-   ```
-
-   Usando npm:
-   ```bash
-   npm install
    ```
 
 3. Configure o TypeScript:
@@ -43,6 +37,8 @@ Antes de começar, certifique-se de ter o seguinte instalado na sua máquina:
    ```env
     PORT=3333
     JWT_SECRET=A very secret word
+    JWT_EXPIRATION=86400 #24 hours
+    CORS_ORIGIN=http://localhost:3000
     MONGODB_URI=mongodb+srv://...
    ```
 
@@ -67,11 +63,6 @@ Para rodar o servidor, execute o seguinte comando:
 Usando Bun:
 ```bash
 bun run src/index.ts
-```
-
-Usando npm (após compilar TypeScript para JavaScript):
-```bash
-npm start
 ```
 
 O servidor será iniciado na porta definida (por padrão, `3333`). Você pode acessar o servidor no navegador ou via ferramenta de API no endereço: `http://localhost:3333`.
